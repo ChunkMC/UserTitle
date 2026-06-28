@@ -53,8 +53,9 @@ public class GuiClickListener implements Listener {
 
         if (clickedTitle == null) return;
 
+        final TitleConfig selectedTitle = clickedTitle;
         PlayerTitleData playerData = plugin.getTitleCache().getOrCreate(player.getUniqueId());
-        String titleId = clickedTitle.getId();
+        String titleId = selectedTitle.getId();
         String activeTitleId = playerData.getActiveTitleId();
 
         // Check if player owns this title
@@ -74,7 +75,7 @@ public class GuiClickListener implements Listener {
                         plugin.getTitleCache().setActiveTitle(player.getUniqueId(), null);
                         plugin.updatePlayerDisplayName(player);
                         plugin.updatePlayerTabList(player);
-                        player.sendMessage(Component.text("§a已取消装备头衔 §6【" + clickedTitle.getName() + "】"));
+                        player.sendMessage(Component.text("§a已取消装备头衔 §6【" + selectedTitle.getName() + "】"));
                     } else {
                         player.sendMessage(Component.text("§c操作失败，请稍后再试"));
                     }
@@ -92,7 +93,7 @@ public class GuiClickListener implements Listener {
                         plugin.getTitleCache().setActiveTitle(player.getUniqueId(), titleId);
                         plugin.updatePlayerDisplayName(player);
                         plugin.updatePlayerTabList(player);
-                        player.sendMessage(Component.text("§a已装备头衔 §6【" + clickedTitle.getName() + "】"));
+                        player.sendMessage(Component.text("§a已装备头衔 §6【" + selectedTitle.getName() + "】"));
                     } else {
                         player.sendMessage(Component.text("§c操作失败，请稍后再试"));
                     }
