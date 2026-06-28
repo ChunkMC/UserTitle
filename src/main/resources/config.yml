@@ -1,0 +1,7 @@
+# ChunkMC UserTitle Plugin Configuration
+backend:
+  host: localhost
+  port: 8080
+
+server:
+  port: 8082

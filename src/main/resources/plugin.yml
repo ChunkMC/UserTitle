@@ -1,0 +1,18 @@
+name: ${name}
+version: ${version}
+main: com.chunkmc.usertitle.UserTitlePlugin
+api-version: "1.21"
+description: ChunkMC UserTitle - Player title system plugin
+author: ChunkMC
+website: https://github.com/ChunkMC/UserTitle
+
+commands:
+  title:
+    description: Open title management GUI
+    usage: /title
+    permission: chunkmc.title
+
+permissions:
+  chunkmc.title:
+    description: Allows use of the /title command
+    default: true

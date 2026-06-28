@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+package chunkmc.v1;
+
+option go_package = "chunkmc/dashboard/gen;chunkmcv1";
+option java_package = "chunkmc.v1";
+option java_multiple_files = true;
+
+service PluginService {
+  rpc CompleteVerification(CompleteVerificationRequest) returns (CompleteVerificationResponse);
+  rpc ReportPlayerLogin(ReportPlayerLoginRequest) returns (ReportPlayerLoginResponse);
+  rpc GetPlayerBinding(GetPlayerBindingRequest) returns (GetPlayerBindingResponse);
+  rpc GetBindingByQQ(GetBindingByQQRequest) returns (GetBindingByQQResponse);
+  rpc BindQQ(BindQQRequest) returns (BindQQResponse);
+  rpc WhitelistPlayer(WhitelistPlayerRequest) returns (WhitelistPlayerResponse);
+  rpc CheckWhitelist(CheckWhitelistRequest) returns (CheckWhitelistResponse);
+  rpc CreateWhitelistCode(CreateWhitelistCodeRequest) returns (CreateWhitelistCodeResponse);
+  rpc ValidateWhitelistCode(ValidateWhitelistCodeRequest) returns (ValidateWhitelistCodeResponse);
+  rpc ListWhitelist(ListWhitelistRequest) returns (ListWhitelistResponse);
+  rpc RemoveWhitelist(RemoveWhitelistRequest) returns (RemoveWhitelistResponse);
+  // Title management RPCs
+  rpc GetPlayerTitle(GetPlayerTitleRequest) returns (GetPlayerTitleResponse);
+  rpc SetPlayerTitle(SetPlayerTitleRequest) returns (SetPlayerTitleResponse);
+  rpc GetPlayerOwnedTitles(GetPlayerOwnedTitlesRequest) returns (GetPlayerOwnedTitlesResponse);
+  rpc AddPlayerTitle(AddPlayerTitleRequest) returns (AddPlayerTitleResponse);
+}
+
+message CompleteVerificationRequest {
+  string verify_code = 1;
+  string uuid = 2;
+  string username = 3;
+}
+
+message CompleteVerificationResponse {
+  bool success = 1;
+  string session_token = 2;
+}
+
+message ReportPlayerLoginRequest {
+  string uuid = 1;
+  string username = 2;
+  int64 login_time = 3;
+}
+
+message ReportPlayerLoginResponse {}
+
+message GetPlayerBindingRequest {
+  string uuid = 1;
+}
+
+message GetPlayerBindingResponse {
+  string qq_number = 1;
+  bool is_bound = 2;
+  string username = 3;
+}
+
+message GetBindingByQQRequest {
+  string qq_number = 1;
+}
+
+message GetBindingByQQResponse {
+  string username = 1;
+  string uuid = 2;
+  bool is_bound = 3;
+}
+
+message BindQQRequest {
+  string uuid = 1;
+  string qq_number = 2;
+  string username = 3;
+}
+
+message BindQQResponse {
+  bool success = 1;
+}
+
+message WhitelistPlayerRequest {
+  string username = 1;
+}
+
+message WhitelistPlayerResponse {
+  bool success = 1;
+  WhitelistResultCode result_code = 2;
+}
+
+enum WhitelistResultCode {
+  WHITELIST_RESULT_CODE_UNSPECIFIED = 0;
+  WHITELIST_RESULT_CODE_SUCCESS = 1;
+  WHITELIST_RESULT_CODE_ALREADY_WHITELISTED = 2;
+  WHITELIST_RESULT_CODE_PLAYER_NOT_FOUND = 3;
+  WHITELIST_RESULT_CODE_FAILED = 4;
+}
+
+message CheckWhitelistRequest {
+  string uuid = 1;
+  string username = 2;
+}
+
+message CheckWhitelistResponse {
+  bool whitelisted = 1;
+}
+
+message CreateWhitelistCodeRequest {
+  string uuid = 1;
+  string username = 2;
+}
+
+message CreateWhitelistCodeResponse {
+  string code = 1;
+}
+
+message ValidateWhitelistCodeRequest {
+  string code = 1;
+  string qq_number = 2;
+}
+
+message ValidateWhitelistCodeResponse {
+  bool success = 1;
+  string username = 2;
+  string uuid = 3;
+}
+
+message ListWhitelistRequest {}
+
+message ListWhitelistResponse {
+  repeated WhitelistEntry entries = 1;
+}
+
+message WhitelistEntry {
+  string username = 1;
+  string qq_number = 2;
+  string uuid = 3;
+}
+
+message RemoveWhitelistRequest {
+  string username = 1;
+}
+
+message RemoveWhitelistResponse {
+  bool success = 1;
+}
+
+// Title management messages
+
+message GetPlayerTitleRequest {
+  string uuid = 1;
+}
+
+message GetPlayerTitleResponse {
+  string title_id = 1;
+}
+
+message SetPlayerTitleRequest {
+  string uuid = 1;
+  string title_id = 2;
+}
+
+message SetPlayerTitleResponse {
+  bool success = 1;
+}
+
+message GetPlayerOwnedTitlesRequest {
+  string uuid = 1;
+}
+
+message GetPlayerOwnedTitlesResponse {
+  repeated string title_ids = 1;
+}
+
+message AddPlayerTitleRequest {
+  string uuid = 1;
+  string title_id = 2;
+}
+
+message AddPlayerTitleResponse {
+  bool success = 1;
+}

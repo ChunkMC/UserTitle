@@ -1,0 +1,33 @@
+# ChunkMC UserTitle - Title Definitions
+# Rarity: LEGENDARY(传说), EPIC(史诗), HERO(勇者), COMMON(普通)
+titles:
+  newbie:
+    name: "萌新玩家"
+    rarity: COMMON
+  end_explorer:
+    name: "末地探索者"
+    rarity: EPIC
+  dragon_slayer:
+    name: "屠龙勇士"
+    rarity: LEGENDARY
+  nether_warrior:
+    name: "下界战士"
+    rarity: HERO
+  redstone_master:
+    name: "红石大师"
+    rarity: EPIC
+  builder:
+    name: "建筑大师"
+    rarity: HERO
+  farmer:
+    name: "农场主"
+    rarity: COMMON
+  miner:
+    name: "矿工达人"
+    rarity: COMMON
+  enchant_master:
+    name: "附魔大师"
+    rarity: HERO
+  wither_hunter:
+    name: "凋灵猎人"
+    rarity: LEGENDARY

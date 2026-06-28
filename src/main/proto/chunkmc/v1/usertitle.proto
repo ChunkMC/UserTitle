@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package chunkmc.v1;
+
+option go_package = "chunkmc/dashboard/gen;chunkmcv1";
+option java_package = "chunkmc.v1";
+option java_multiple_files = true;
+
+// Callback service: backend pushes title changes to game plugin
+service UserTitleCallbackService {
+  rpc NotifyTitleChanged(NotifyTitleChangedRequest) returns (NotifyTitleChangedResponse);
+}
+
+message NotifyTitleChangedRequest {
+  string uuid = 1;
+  string title_id = 2;
+  TitleChangeType change_type = 3;
+}
+
+message NotifyTitleChangedResponse {}
+
+enum TitleChangeType {
+  TITLE_CHANGE_TYPE_UNSPECIFIED = 0;
+  TITLE_CHANGE_TYPE_EQUIPPED = 1;
+  TITLE_CHANGE_TYPE_UNEQUIPPED = 2;
+  TITLE_CHANGE_TYPE_ADDED = 3;
+}
