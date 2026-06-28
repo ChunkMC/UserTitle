@@ -19,20 +19,10 @@ public class TabCompleteListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        // Load player title data from backend async
+        // Load player title data async (with backend + local fallback)
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                String uuid = player.getUniqueId().toString();
-
-                // Fetch active title
-                String activeTitleId = plugin.getBackendClient().getPlayerTitle(uuid);
-                plugin.getTitleCache().setActiveTitle(player.getUniqueId(), activeTitleId);
-
-                // Fetch owned titles
-                var ownedTitles = plugin.getBackendClient().getPlayerOwnedTitles(uuid);
-                for (String titleId : ownedTitles) {
-                    plugin.getTitleCache().addOwnedTitle(player.getUniqueId(), titleId);
-                }
+                plugin.loadPlayerData(player.getUniqueId());
 
                 // Update display on main thread
                 plugin.getServer().getScheduler().runTask(plugin, () -> {
@@ -49,7 +39,6 @@ public class TabCompleteListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        // Clean up cache
         plugin.getTitleCache().remove(event.getPlayer().getUniqueId());
     }
 }

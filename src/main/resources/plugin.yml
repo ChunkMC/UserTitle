@@ -9,10 +9,13 @@ website: https://github.com/ChunkMC/UserTitle
 commands:
   title:
     description: Open title management GUI
-    usage: /title
+    usage: /title [give <player> <titleId> | list]
     permission: chunkmc.title
 
 permissions:
   chunkmc.title:
     description: Allows use of the /title command
     default: true
+  chunkmc.title.give:
+    description: Allows giving titles to players
+    default: op

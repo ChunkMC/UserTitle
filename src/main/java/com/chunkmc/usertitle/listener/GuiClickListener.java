@@ -5,7 +5,6 @@ import com.chunkmc.usertitle.gui.TitleGui;
 import com.chunkmc.usertitle.model.PlayerTitleData;
 import com.chunkmc.usertitle.model.TitleConfig;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -64,40 +63,26 @@ public class GuiClickListener implements Listener {
             return;
         }
 
-        // Toggle title
+        // Toggle title (uses backend + local fallback)
         if (titleId.equals(activeTitleId)) {
             // Unequip
-            String uuid = player.getUniqueId().toString();
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-                boolean success = plugin.getBackendClient().setPlayerTitle(uuid, "");
+                plugin.setActiveTitle(player.getUniqueId(), null);
                 plugin.getServer().getScheduler().runTask(plugin, () -> {
-                    if (success) {
-                        plugin.getTitleCache().setActiveTitle(player.getUniqueId(), null);
-                        plugin.updatePlayerDisplayName(player);
-                        plugin.updatePlayerTabList(player);
-                        player.sendMessage(Component.text("§a已取消装备头衔 §6【" + selectedTitle.getName() + "】"));
-                    } else {
-                        player.sendMessage(Component.text("§c操作失败，请稍后再试"));
-                    }
-                    // Refresh GUI
+                    plugin.updatePlayerDisplayName(player);
+                    plugin.updatePlayerTabList(player);
+                    player.sendMessage(Component.text("§a已取消装备头衔 §6【" + selectedTitle.getName() + "】"));
                     new TitleGui(plugin).open(player);
                 });
             });
         } else {
             // Equip
-            String uuid = player.getUniqueId().toString();
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-                boolean success = plugin.getBackendClient().setPlayerTitle(uuid, titleId);
+                plugin.setActiveTitle(player.getUniqueId(), titleId);
                 plugin.getServer().getScheduler().runTask(plugin, () -> {
-                    if (success) {
-                        plugin.getTitleCache().setActiveTitle(player.getUniqueId(), titleId);
-                        plugin.updatePlayerDisplayName(player);
-                        plugin.updatePlayerTabList(player);
-                        player.sendMessage(Component.text("§a已装备头衔 §6【" + selectedTitle.getName() + "】"));
-                    } else {
-                        player.sendMessage(Component.text("§c操作失败，请稍后再试"));
-                    }
-                    // Refresh GUI
+                    plugin.updatePlayerDisplayName(player);
+                    plugin.updatePlayerTabList(player);
+                    player.sendMessage(Component.text("§a已装备头衔 §6【" + selectedTitle.getName() + "】"));
                     new TitleGui(plugin).open(player);
                 });
             });

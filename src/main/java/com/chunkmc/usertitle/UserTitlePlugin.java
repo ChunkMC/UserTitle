@@ -9,6 +9,7 @@ import com.chunkmc.usertitle.listener.GuiClickListener;
 import com.chunkmc.usertitle.listener.TabCompleteListener;
 import com.chunkmc.usertitle.model.TitleConfig;
 import com.chunkmc.usertitle.model.TitleRarity;
+import com.chunkmc.usertitle.storage.LocalTitleStorage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -20,12 +21,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class UserTitlePlugin extends JavaPlugin {
 
     private BackendClient backendClient;
     private CallbackServer callbackServer;
     private TitleCache titleCache;
+    private LocalTitleStorage localStorage;
     private Map<String, TitleConfig> titleConfigs;
 
     @Override
@@ -34,6 +38,7 @@ public class UserTitlePlugin extends JavaPlugin {
 
         // Initialize cache and title configs
         titleCache = new TitleCache();
+        localStorage = new LocalTitleStorage(this);
         titleConfigs = new HashMap<>();
         loadTitleConfigs();
 
@@ -75,7 +80,6 @@ public class UserTitlePlugin extends JavaPlugin {
 
     private void loadTitleConfigs() {
         titleConfigs.clear();
-        // Reload titles.yml from plugin resources
         saveResource("titles.yml", false);
         org.bukkit.configuration.file.YamlConfiguration titlesConfig =
                 org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(
@@ -101,12 +105,90 @@ public class UserTitlePlugin extends JavaPlugin {
         getLogger().info("Loaded " + titleConfigs.size() + " title configurations");
     }
 
+    /**
+     * Load player title data from backend with local storage fallback.
+     */
+    public void loadPlayerData(UUID uuid) {
+        String uuidStr = uuid.toString();
+
+        // Try backend first
+        String activeTitleId = backendClient.getPlayerTitle(uuidStr);
+        java.util.List<String> ownedTitles = backendClient.getPlayerOwnedTitles(uuidStr);
+
+        if (activeTitleId != null || !ownedTitles.isEmpty()) {
+            // Backend available - use backend data and sync to local
+            titleCache.setActiveTitle(uuid, activeTitleId);
+            for (String titleId : ownedTitles) {
+                titleCache.addOwnedTitle(uuid, titleId);
+            }
+            // Sync to local storage
+            localStorage.setActiveTitle(uuid, activeTitleId);
+            for (String titleId : ownedTitles) {
+                localStorage.addOwnedTitle(uuid, titleId);
+            }
+            getLogger().info("Loaded title data from backend for " + uuidStr);
+        } else {
+            // Backend unavailable - use local storage
+            activeTitleId = localStorage.getActiveTitle(uuid);
+            Set<String> localOwned = localStorage.getOwnedTitles(uuid);
+            titleCache.setActiveTitle(uuid, activeTitleId);
+            for (String titleId : localOwned) {
+                titleCache.addOwnedTitle(uuid, titleId);
+            }
+            getLogger().info("Loaded title data from local storage for " + uuidStr);
+        }
+    }
+
+    /**
+     * Set player's active title with backend sync and local fallback.
+     */
+    public boolean setActiveTitle(UUID uuid, String titleId) {
+        String uuidStr = uuid.toString();
+
+        // Try backend
+        boolean backendSuccess = backendClient.setPlayerTitle(uuidStr, titleId);
+
+        // Always update local storage
+        localStorage.setActiveTitle(uuid, titleId);
+        titleCache.setActiveTitle(uuid, titleId);
+
+        if (!backendSuccess) {
+            getLogger().info("Backend unavailable, title saved locally for " + uuidStr);
+        }
+
+        return true;
+    }
+
+    /**
+     * Add a title to player's collection with backend sync and local fallback.
+     */
+    public boolean addPlayerTitle(UUID uuid, String titleId) {
+        String uuidStr = uuid.toString();
+
+        // Try backend
+        boolean backendSuccess = backendClient.addPlayerTitle(uuidStr, titleId);
+
+        // Always update local storage
+        localStorage.addOwnedTitle(uuid, titleId);
+        titleCache.addOwnedTitle(uuid, titleId);
+
+        if (!backendSuccess) {
+            getLogger().info("Backend unavailable, title added locally for " + uuidStr);
+        }
+
+        return true;
+    }
+
     public BackendClient getBackendClient() {
         return backendClient;
     }
 
     public TitleCache getTitleCache() {
         return titleCache;
+    }
+
+    public LocalTitleStorage getLocalStorage() {
+        return localStorage;
     }
 
     public Map<String, TitleConfig> getTitleConfigs() {
