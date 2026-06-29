@@ -40,11 +40,14 @@ public class ChatListener implements Listener {
             case COMMON -> NamedTextColor.WHITE;
         };
 
-        // Update player display name before chat renders
-        Component titlePrefix = Component.text("[" + config.getName() + "]")
-                .color(color)
-                .append(Component.space());
-
-        player.displayName(titlePrefix.append(Component.text(player.getName())));
+        // Custom renderer: [称号]<Steve> 消息
+        event.renderer((source, sourceDisplayName, message, viewer) ->
+                Component.text("[")
+                        .append(Component.text(config.getName()).color(color))
+                        .append(Component.text("]<"))
+                        .append(Component.text(source.getName()))
+                        .append(Component.text("> "))
+                        .append(message)
+        );
     }
 }
