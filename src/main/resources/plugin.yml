@@ -7,9 +7,9 @@ author: ChunkMC
 website: https://github.com/ChunkMC/UserTitle
 
 commands:
-  title:
+  ut:
     description: Open title management GUI
-    usage: /title [give <player> <titleId> | list]
+    usage: /ut [give <player> <titleId> | list]
     permission: chunkmc.title
 
 permissions:

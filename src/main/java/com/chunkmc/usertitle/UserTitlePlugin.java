@@ -57,7 +57,7 @@ public class UserTitlePlugin extends JavaPlugin {
         }
 
         // Register commands
-        getCommand("title").setExecutor(new TitleCommand(this));
+        getCommand("ut").setExecutor(new TitleCommand(this));
 
         // Register listeners
         Bukkit.getPluginManager().registerEvents(new ChatListener(this), this);

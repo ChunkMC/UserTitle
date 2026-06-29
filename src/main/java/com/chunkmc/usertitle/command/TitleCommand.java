@@ -21,9 +21,9 @@ public class TitleCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // /title - open GUI (player only)
-        // /title give <player> <titleId> - give title to player (admin)
-        // /title list - list all available titles
+        // /ut - open GUI (player only)
+        // /ut give <player> <titleId> - give title to player (admin)
+        // /ut list - list all available titles
 
         if (args.length == 0) {
             // Open GUI
@@ -49,13 +49,13 @@ public class TitleCommand implements CommandExecutor {
 
         switch (subCommand) {
             case "give" -> {
-                // /title give <player> <titleId>
+                // /ut give <player> <titleId>
                 if (!sender.hasPermission("chunkmc.title.give")) {
                     sender.sendMessage("§c你没有权限执行此命令！");
                     return true;
                 }
                 if (args.length < 3) {
-                    sender.sendMessage("§c用法: /title give <玩家名> <头衔ID>");
+                    sender.sendMessage("§c用法: /ut give <玩家名> <头衔ID>");
                     return true;
                 }
 
@@ -77,7 +77,7 @@ public class TitleCommand implements CommandExecutor {
                     plugin.addPlayerTitle(target.getUniqueId(), titleId);
                     plugin.getServer().getScheduler().runTask(plugin, () -> {
                         sender.sendMessage("§a已将头衔 §6【" + config.getName() + "】§a 赠送给 " + target.getName());
-                        target.sendMessage("§a你获得了新头衔 §6【" + config.getName() + "】§a！输入 /title 查看");
+                        target.sendMessage("§a你获得了新头衔 §6【" + config.getName() + "】§a！输入 /ut 查看");
                     });
                 });
             }
@@ -89,9 +89,9 @@ public class TitleCommand implements CommandExecutor {
             }
             default -> {
                 sender.sendMessage("§c未知子命令。用法:");
-                sender.sendMessage("§7/title §f- 打开头衔界面");
-                sender.sendMessage("§7/title give <玩家> <头衔ID> §f- 赠送头衔");
-                sender.sendMessage("§7/title list §f- 列出所有头衔");
+                sender.sendMessage("§7/ut §f- 打开头衔界面");
+                sender.sendMessage("§7/ut give <玩家> <头衔ID> §f- 赠送头衔");
+                sender.sendMessage("§7/ut list §f- 列出所有头衔");
             }
         }
 
