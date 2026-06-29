@@ -208,7 +208,7 @@ public class UserTitlePlugin extends JavaPlugin {
         if (config == null) {
             return null;
         }
-        return config.getRarity().getColorCode() + "[" + config.getName() + "]";
+        return config.rarity().getColorCode() + "[" + config.name() + "]";
     }
 
     public Component getActiveTitleComponent(Player player) {
@@ -221,14 +221,14 @@ public class UserTitlePlugin extends JavaPlugin {
             return Component.empty();
         }
 
-        TextColor color = switch (config.getRarity()) {
+        TextColor color = switch (config.rarity()) {
             case LEGENDARY -> NamedTextColor.GOLD;
             case EPIC -> NamedTextColor.DARK_PURPLE;
             case HERO -> NamedTextColor.BLUE;
             case COMMON -> NamedTextColor.WHITE;
         };
 
-        return Component.text("[" + config.getName() + "]")
+        return Component.text("[" + config.name() + "]")
                 .color(color)
                 .append(Component.space());
     }

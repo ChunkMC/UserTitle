@@ -33,7 +33,7 @@ public class ChatListener implements Listener {
             return;
         }
 
-        TextColor color = switch (config.getRarity()) {
+        TextColor color = switch (config.rarity()) {
             case LEGENDARY -> NamedTextColor.GOLD;
             case EPIC -> NamedTextColor.DARK_PURPLE;
             case HERO -> NamedTextColor.BLUE;
@@ -43,7 +43,7 @@ public class ChatListener implements Listener {
         // Custom renderer: [称号]<Steve> 消息
         event.renderer((source, sourceDisplayName, message, viewer) ->
                 Component.text("[")
-                        .append(Component.text(config.getName()).color(color))
+                        .append(Component.text(config.name()).color(color))
                         .append(Component.text("]<"))
                         .append(Component.text(source.getName()))
                         .append(Component.text("> "))

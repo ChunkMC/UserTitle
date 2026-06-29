@@ -3,10 +3,8 @@ package com.chunkmc.usertitle.gui;
 import com.chunkmc.usertitle.UserTitlePlugin;
 import com.chunkmc.usertitle.model.PlayerTitleData;
 import com.chunkmc.usertitle.model.TitleConfig;
-import com.chunkmc.usertitle.model.TitleRarity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -19,7 +17,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class TitleGui {
 
@@ -76,20 +73,20 @@ public class TitleGui {
         ItemMeta meta = item.getItemMeta();
 
         // Title name with rarity color
-        TextColor color = switch (config.getRarity()) {
+        TextColor color = switch (config.rarity()) {
             case LEGENDARY -> NamedTextColor.GOLD;
             case EPIC -> NamedTextColor.DARK_PURPLE;
             case HERO -> NamedTextColor.BLUE;
             case COMMON -> NamedTextColor.WHITE;
         };
 
-        meta.displayName(Component.text("【" + config.getName() + "】")
+        meta.displayName(Component.text("【" + config.name() + "】")
                 .color(color)
                 .decorate(TextDecoration.BOLD));
 
         // Lore
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("(" + config.getRarity().getDisplayName() + ")")
+        lore.add(Component.text("(" + config.rarity().getDisplayName() + ")")
                 .color(color));
         lore.add(Component.empty());
 

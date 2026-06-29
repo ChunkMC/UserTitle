@@ -76,15 +76,15 @@ public class TitleCommand implements CommandExecutor {
                 plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                     plugin.addPlayerTitle(target.getUniqueId(), titleId);
                     plugin.getServer().getScheduler().runTask(plugin, () -> {
-                        sender.sendMessage("§a已将头衔 §6【" + config.getName() + "】§a 赠送给 " + target.getName());
-                        target.sendMessage("§a你获得了新头衔 §6【" + config.getName() + "】§a！输入 /ut 查看");
+                        sender.sendMessage("§a已将头衔 §6【" + config.name() + "】§a 赠送给 " + target.getName());
+                        target.sendMessage("§a你获得了新头衔 §6【" + config.name() + "】§a！输入 /ut 查看");
                     });
                 });
             }
             case "list" -> {
                 sender.sendMessage("§6===== 可用头衔列表 =====");
                 for (TitleConfig config : plugin.getTitleConfigs().values()) {
-                    sender.sendMessage(config.getFormattedTooltip() + " §7(ID: " + config.getId() + ")");
+                    sender.sendMessage(config.getFormattedTooltip() + " §7(ID: " + config.id() + ")");
                 }
             }
             default -> {

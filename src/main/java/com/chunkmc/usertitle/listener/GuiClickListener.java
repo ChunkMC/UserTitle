@@ -44,7 +44,7 @@ public class GuiClickListener implements Listener {
 
         TitleConfig clickedTitle = null;
         for (Map.Entry<String, TitleConfig> entry : plugin.getTitleConfigs().entrySet()) {
-            if (displayName.contains(entry.getValue().getName())) {
+            if (displayName.contains(entry.getValue().name())) {
                 clickedTitle = entry.getValue();
                 break;
             }
@@ -54,7 +54,7 @@ public class GuiClickListener implements Listener {
 
         final TitleConfig selectedTitle = clickedTitle;
         PlayerTitleData playerData = plugin.getTitleCache().getOrCreate(player.getUniqueId());
-        String titleId = selectedTitle.getId();
+        String titleId = selectedTitle.id();
         String activeTitleId = playerData.getActiveTitleId();
 
         // Check if player owns this title
@@ -71,7 +71,7 @@ public class GuiClickListener implements Listener {
                 plugin.getServer().getScheduler().runTask(plugin, () -> {
                     plugin.updatePlayerDisplayName(player);
                     plugin.updatePlayerTabList(player);
-                    player.sendMessage(Component.text("§a已取消装备头衔 §6【" + selectedTitle.getName() + "】"));
+                    player.sendMessage(Component.text("§a已取消装备头衔 §6【" + selectedTitle.name() + "】"));
                     new TitleGui(plugin).open(player);
                 });
             });
@@ -82,7 +82,7 @@ public class GuiClickListener implements Listener {
                 plugin.getServer().getScheduler().runTask(plugin, () -> {
                     plugin.updatePlayerDisplayName(player);
                     plugin.updatePlayerTabList(player);
-                    player.sendMessage(Component.text("§a已装备头衔 §6【" + selectedTitle.getName() + "】"));
+                    player.sendMessage(Component.text("§a已装备头衔 §6【" + selectedTitle.name() + "】"));
                     new TitleGui(plugin).open(player);
                 });
             });
