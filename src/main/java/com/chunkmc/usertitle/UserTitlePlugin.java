@@ -14,7 +14,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,16 +35,18 @@ public class UserTitlePlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        // Initialize cache and title configs
+        // Initialize cache and local storage
         titleCache = new TitleCache();
         localStorage = new LocalTitleStorage(this);
         titleConfigs = new HashMap<>();
-        loadTitleConfigs();
 
         // Initialize gRPC backend client
         String backendHost = getConfig().getString("backend.host", "localhost");
         int backendPort = getConfig().getInt("backend.port", 8080);
         backendClient = new BackendClient(backendHost, backendPort, this);
+
+        // Load title configs from backend
+        loadTitleConfigs();
 
         // Start gRPC callback server
         int serverPort = getConfig().getInt("server.port", 8082);
@@ -80,29 +81,19 @@ public class UserTitlePlugin extends JavaPlugin {
 
     private void loadTitleConfigs() {
         titleConfigs.clear();
-        saveResource("titles.yml", false);
-        org.bukkit.configuration.file.YamlConfiguration titlesConfig =
-                org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(
-                        new java.io.File(getDataFolder(), "titles.yml"));
 
-        ConfigurationSection titlesSection = titlesConfig.getConfigurationSection("titles");
-        if (titlesSection == null) {
-            getLogger().warning("No titles section found in titles.yml");
+        var titleInfoList = backendClient.listTitles();
+        if (titleInfoList.isEmpty()) {
+            getLogger().warning("Failed to load titles from backend, title list is empty");
             return;
         }
 
-        for (String id : titlesSection.getKeys(false)) {
-            ConfigurationSection titleSection = titlesSection.getConfigurationSection(id);
-            if (titleSection == null) continue;
-
-            String name = titleSection.getString("name", id);
-            String rarityStr = titleSection.getString("rarity", "COMMON");
-            TitleRarity rarity = TitleRarity.fromString(rarityStr);
-
-            titleConfigs.put(id, new TitleConfig(id, name, rarity));
+        for (var info : titleInfoList) {
+            TitleRarity rarity = TitleRarity.fromString(info.getRarity());
+            titleConfigs.put(info.getId(), new TitleConfig(info.getId(), info.getName(), rarity));
         }
 
-        getLogger().info("Loaded " + titleConfigs.size() + " title configurations");
+        getLogger().info("Loaded " + titleConfigs.size() + " title configurations from backend");
     }
 
     /**

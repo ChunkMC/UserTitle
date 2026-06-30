@@ -14,7 +14,11 @@ import chunkmc.v1.GetPlayerOwnedTitlesRequest;
 import chunkmc.v1.GetPlayerOwnedTitlesResponse;
 import chunkmc.v1.AddPlayerTitleRequest;
 import chunkmc.v1.AddPlayerTitleResponse;
+import chunkmc.v1.PluginListTitlesRequest;
+import chunkmc.v1.PluginListTitlesResponse;
+import chunkmc.v1.PluginTitleInfo;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -85,6 +89,17 @@ public class BackendClient {
         } catch (StatusRuntimeException e) {
             plugin.getLogger().warning("Failed to add player title: " + e.getStatus());
             return false;
+        }
+    }
+
+    public java.util.List<PluginTitleInfo> listTitles() {
+        try {
+            PluginListTitlesRequest request = PluginListTitlesRequest.newBuilder().build();
+            PluginListTitlesResponse response = blockingStub.listTitles(request);
+            return response.getTitlesList();
+        } catch (StatusRuntimeException e) {
+            plugin.getLogger().warning("Failed to list titles: " + e.getStatus());
+            return Collections.emptyList();
         }
     }
 

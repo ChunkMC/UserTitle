@@ -23,6 +23,7 @@ service PluginService {
   rpc SetPlayerTitle(SetPlayerTitleRequest) returns (SetPlayerTitleResponse);
   rpc GetPlayerOwnedTitles(GetPlayerOwnedTitlesRequest) returns (GetPlayerOwnedTitlesResponse);
   rpc AddPlayerTitle(AddPlayerTitleRequest) returns (AddPlayerTitleResponse);
+  rpc ListTitles(PluginListTitlesRequest) returns (PluginListTitlesResponse);
 }
 
 message CompleteVerificationRequest {
@@ -174,4 +175,16 @@ message AddPlayerTitleRequest {
 
 message AddPlayerTitleResponse {
   bool success = 1;
+}
+
+message PluginTitleInfo {
+  string id = 1;
+  string name = 2;
+  string rarity = 3;
+}
+
+message PluginListTitlesRequest {}
+
+message PluginListTitlesResponse {
+  repeated PluginTitleInfo titles = 1;
 }
