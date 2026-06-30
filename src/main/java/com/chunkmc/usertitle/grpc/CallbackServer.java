@@ -73,17 +73,20 @@ public class CallbackServer {
             String titleId = request.getTitleId();
             TitleChangeType changeType = request.getChangeType();
 
-            plugin.getLogger().info("Received title change callback: uuid=" + uuid
+            plugin.getLogger().info("[CallbackServer] Received title change: uuid=" + uuid
                     + ", titleId=" + titleId + ", type=" + changeType);
 
             // Update cache
             UUID playerUuid = UUID.fromString(uuid);
             if (changeType == TitleChangeType.TITLE_CHANGE_TYPE_EQUIPPED) {
                 plugin.getTitleCache().setActiveTitle(playerUuid, titleId);
+                plugin.getLogger().info("[CallbackServer] Set active title for " + uuid + " -> " + titleId);
             } else if (changeType == TitleChangeType.TITLE_CHANGE_TYPE_UNEQUIPPED) {
                 plugin.getTitleCache().setActiveTitle(playerUuid, null);
+                plugin.getLogger().info("[CallbackServer] Cleared active title for " + uuid);
             } else if (changeType == TitleChangeType.TITLE_CHANGE_TYPE_ADDED) {
                 plugin.getTitleCache().addOwnedTitle(playerUuid, titleId);
+                plugin.getLogger().info("[CallbackServer] Added owned title for " + uuid + " -> " + titleId);
             }
 
             // Update player display if online

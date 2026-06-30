@@ -106,6 +106,8 @@ public class UserTitlePlugin extends JavaPlugin {
         String activeTitleId = backendClient.getPlayerTitle(uuidStr);
         java.util.List<String> ownedTitles = backendClient.getPlayerOwnedTitles(uuidStr);
 
+        getLogger().info("loadPlayerData(" + uuidStr + "): activeTitle=" + activeTitleId + ", ownedTitles=" + ownedTitles);
+
         if (activeTitleId != null || !ownedTitles.isEmpty()) {
             // Backend available - use backend data and sync to local
             titleCache.setActiveTitle(uuid, activeTitleId);
@@ -117,16 +119,16 @@ public class UserTitlePlugin extends JavaPlugin {
             for (String titleId : ownedTitles) {
                 localStorage.addOwnedTitle(uuid, titleId);
             }
-            getLogger().info("Loaded title data from backend for " + uuidStr);
+            getLogger().info("Loaded title data from backend for " + uuidStr + " (" + ownedTitles.size() + " owned titles)");
         } else {
-            // Backend unavailable - use local storage
+            // Backend unavailable or no data - use local storage
             activeTitleId = localStorage.getActiveTitle(uuid);
             Set<String> localOwned = localStorage.getOwnedTitles(uuid);
             titleCache.setActiveTitle(uuid, activeTitleId);
             for (String titleId : localOwned) {
                 titleCache.addOwnedTitle(uuid, titleId);
             }
-            getLogger().info("Loaded title data from local storage for " + uuidStr);
+            getLogger().info("Loaded title data from local storage for " + uuidStr + " (" + localOwned.size() + " owned titles)");
         }
     }
 

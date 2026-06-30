@@ -44,9 +44,10 @@ public class BackendClient {
                     .build();
             GetPlayerTitleResponse response = blockingStub.getPlayerTitle(request);
             String titleId = response.getTitleId();
+            plugin.getLogger().info("getPlayerTitle(" + uuid + ") returned: " + (titleId.isEmpty() ? "(empty)" : titleId));
             return titleId.isEmpty() ? null : titleId;
         } catch (StatusRuntimeException e) {
-            plugin.getLogger().warning("Failed to get player title: " + e.getStatus());
+            plugin.getLogger().warning("Failed to get player title for " + uuid + ": " + e.getStatus() + " - " + e.getMessage());
             return null;
         }
     }
@@ -71,9 +72,11 @@ public class BackendClient {
                     .setUuid(uuid)
                     .build();
             GetPlayerOwnedTitlesResponse response = blockingStub.getPlayerOwnedTitles(request);
-            return response.getTitleIdsList();
+            List<String> titles = response.getTitleIdsList();
+            plugin.getLogger().info("getPlayerOwnedTitles(" + uuid + ") returned " + titles.size() + " titles: " + titles);
+            return titles;
         } catch (StatusRuntimeException e) {
-            plugin.getLogger().warning("Failed to get player owned titles: " + e.getStatus());
+            plugin.getLogger().warning("Failed to get player owned titles for " + uuid + ": " + e.getStatus() + " - " + e.getMessage());
             return Collections.emptyList();
         }
     }
