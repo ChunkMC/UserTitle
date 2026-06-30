@@ -235,7 +235,7 @@ public class UserTitlePlugin extends JavaPlugin {
 
     public void updatePlayerDisplayName(Player player) {
         Component titleComponent = getActiveTitleComponent(player);
-        Component nameComponent = Component.text(player.getName());
+        Component nameComponent = Component.text(player.getName()).color(NamedTextColor.WHITE);
         Component displayName = titleComponent.append(nameComponent);
         player.displayName(displayName);
         player.playerListName(displayName);
