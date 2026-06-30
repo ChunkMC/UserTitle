@@ -42,9 +42,9 @@ public class ChatListener implements Listener {
 
         // Custom renderer: [称号]<Steve> 消息
         event.renderer((source, sourceDisplayName, message, viewer) ->
-                Component.text("[")
+                Component.text("[").color(color)
                         .append(Component.text(config.name()).color(color))
-                        .append(Component.text("]<"))
+                        .append(Component.text("]<").color(color))
                         .append(Component.text(source.getName()))
                         .append(Component.text("> "))
                         .append(message)
